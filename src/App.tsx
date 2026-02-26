@@ -1,5 +1,7 @@
+import AppRoutes from "./routes";
+
 function App() {
-  return <div>Projeto CRUD Livros e Autores</div>
+  return <AppRoutes />;
 }
 
-export default App
+export default App;
