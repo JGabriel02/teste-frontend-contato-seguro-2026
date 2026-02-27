@@ -1,13 +1,14 @@
 import { useEffect, useState } from "react";
-import { Table, Button, Modal, Form, Input, Popconfirm, message } from "antd";
+import { Table, Button, Modal, Form, Input, message } from "antd";
 import dayjs from "dayjs";
 
 import {
   type Author,
   getAllAuthors,
   createAuthor,
-  deleteAuthor, 
+  deleteAuthor,
 } from "../services/authorService";
+import ActionButtons from "../components/common/ActionButtons";
 
 export default function AuthorsPage() {
   // estado com a lista de autores exibida na tabela
@@ -16,6 +17,8 @@ export default function AuthorsPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   // instância do Form do antd para operações como submit/reset
   const [form] = Form.useForm();
+  const [selectedAuthor, setSelectedAuthor] = useState<Author | null>(null);
+  const [isViewModalOpen, setIsViewModalOpen] = useState(false);
 
   // função reutilizável para carregar autores do storage e atualizar estado
   async function loadAuthors() {
@@ -35,8 +38,12 @@ export default function AuthorsPage() {
   // handler chamado quando o formulário de criação é enviado
   async function handleCreateAuthor(values: { name: string; email?: string }) {
     // monta o novo autor com id, nome, e data atual
+    const lastCode =
+      authors.length > 0 ? Math.max(...authors.map((a) => a.code)) : 0;
+
     const newAuthor: Author = {
-      id: crypto.randomUUID(),
+      id: crypto.randomUUID(), // UUID
+      code: lastCode + 1, // número visível
       name: values.name,
       email: values.email,
       createdAt: dayjs().toISOString(),
@@ -58,36 +65,33 @@ export default function AuthorsPage() {
     loadAuthors();
   }
 
+  // handler para visualizar detalhes de um autor (escopo do componente)
+  function handleViewAuthor(author: Author) {
+    setSelectedAuthor(author);
+    setIsViewModalOpen(true);
+  }
+
   // definição das colunas da tabela exibida ao usuário
   const columns = [
+    {
+      title: "Código",
+      dataIndex: "code",
+      key: "code",
+      ellipsis: true, // evita quebrar layout
+    },
     {
       title: "Nome",
       dataIndex: "name",
       key: "name",
     },
     {
-      title: "Email",
-      dataIndex: "email",
-      key: "email",
-    },
-    {
-      title: "Criado em",
-      dataIndex: "createdAt",
-      key: "createdAt",
-      // formata a data para exibição legível
-      render: (date: string) => dayjs(date).format("DD/MM/YYYY"),
-    },
-    {
       title: "Ações",
       key: "actions",
-      // coluna com botões de ação por linha (ex.: excluir)
       render: (_: unknown, record: Author) => (
-        <Popconfirm
-          title="Tem certeza que deseja excluir?"
-          onConfirm={() => handleDeleteAuthor(record.id)}
-        >
-          <Button danger>Excluir</Button>
-        </Popconfirm>
+        <ActionButtons
+          onView={() => handleViewAuthor(record)}
+          onDelete={() => handleDeleteAuthor(record.id)}
+        />
       ),
     },
   ];
@@ -130,6 +134,37 @@ export default function AuthorsPage() {
             <Input />
           </Form.Item>
         </Form>
+      </Modal>
+
+      {/* modal separado para visualizar detalhes do autor */}
+      <Modal
+        title="Detalhes do Autor"
+        open={isViewModalOpen}
+        onCancel={() => {
+          // fecha o modal de visualização e limpa o autor selecionado
+          setIsViewModalOpen(false);
+          setSelectedAuthor(null);
+        }}
+        footer={null}
+      >
+        {selectedAuthor && (
+          <>
+          <p>
+              <strong>ID:</strong> {selectedAuthor.id}
+            </p>
+            <p>
+              <strong>Nome:</strong> {selectedAuthor.name}
+            </p>
+            <p>
+              <strong>Email:</strong> {" "}
+              {selectedAuthor.email || "Não informado"}
+            </p>
+            <p>
+              <strong>Criado em:</strong> {" "}
+              {dayjs(selectedAuthor.createdAt).format("DD/MM/YYYY HH:mm")}
+            </p>
+          </>
+        )}
       </Modal>
     </>
   );

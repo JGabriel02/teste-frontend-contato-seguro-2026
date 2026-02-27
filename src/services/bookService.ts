@@ -5,6 +5,8 @@ import storage from "./storage";
 export interface Book {
   // identificador único do livro
   id: string;
+     // número sequencial visível
+    code: number; 
   // título/nome do livro
   name: string;
   // id do autor associado (chave estrangeira)

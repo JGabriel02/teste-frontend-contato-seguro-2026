@@ -7,6 +7,8 @@ export interface Author {
   // identificador único do autor
   id: string;
   // nome do autor
+  code: number;
+  // número sequencial visível
   name: string;
   // e-mail opcional
   email?: string;

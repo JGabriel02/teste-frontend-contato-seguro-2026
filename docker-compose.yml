@@ -1,0 +1,9 @@
+version: "3.9"
+
+services:
+  book-app:
+    build: .
+    container_name: book-app-container
+    ports:
+      - "3000:80"
+    restart: unless-stopped
