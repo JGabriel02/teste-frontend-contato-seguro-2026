@@ -1,73 +1,109 @@
-# React + TypeScript + Vite
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+    # Projeto: CRUD de Livros e Autores
 
-Currently, two official plugins are available:
+    Esta é a implementação do desafio de front-end (aplicação SPA simples para gerenciar autores e livros).
+    O projeto usa Vite + React (TypeScript) e persiste dados no navegador utilizando IndexedDB via `localforage`.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+    ## Tecnologias
+    - React 18 + TypeScript
+    - Vite
+    - Ant Design (UI)
+    - Dayjs (datas)
+    - localForage (IndexedDB wrapper)
+    - Vitest (testes)
+    - Docker (build para Nginx)
 
-## React Compiler
+    ## Estrutura principal
+    - `src/pages` — páginas: `AuthorsPage`, `BooksPage`.
+    - `src/services` — serviços: `bookService`, `authorService`, `storage`.
+    - `src/components` — componentes reutilizáveis (`ActionButtons`, `MainLayout`, etc.).
+    - `src/routes` — roteamento da aplicação.
 
-The React Compiler is currently not compatible with SWC. See [this issue](https://github.com/vitejs/vite-plugin-react/issues/428) for tracking the progress.
+    ---
 
-## Expanding the ESLint configuration
+    ## Requisitos locais (recomendados)
+    - Node.js >= 18
+    - npm 9+ (ou gerenciador de pacotes equivalente)
+    - Docker (opcional, para rodar via container)
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+    ## Rodando em modo desenvolvedor
+    Abra um terminal (PowerShell) na raiz do projeto e execute:
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+    ```powershell
+    npm install
+    npm run dev
+    ```
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+    Por padrão o Vite roda em http://localhost:5173 — o terminal informará a URL exata.
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+    ## Build de produção
+    Gerar build de produção (gera a pasta `dist/`):
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+    ```powershell
+    npm run build
+    ```
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+    Você pode pré-visualizar o build com:
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+    ```powershell
+    npm run preview
+    ```
+
+    ---
+
+    ## Testes (Vitest)
+    O projeto já tem configuração inicial do Vitest e alguns testes. Para rodar:
+
+    ```powershell
+    npm test          # executa os testes uma vez
+    npm run test:watch # executa em modo watch
+    ```
+
+    Se os testes não forem encontrados, verifique se as dependências estão instaladas (`npm install`) e se os arquivos de teste seguem o padrão `*.test.*` dentro de `src/`.
+
+    ---
+
+    ## Docker — build e execução
+    Há um `Dockerfile` que faz o build da aplicação e empacota o `dist/` em um servidor Nginx.
+
+    Build da imagem (na raiz do projeto):
+
+    ```powershell
+    docker build -t teste-frontend-contato-seguro:latest .
+    ```
+
+    Executar o container (mapeando a porta 80):
+
+    ```powershell
+    docker run --rm -p 80:80 teste-frontend-contato-seguro:latest
+    ```
+
+    Abra http://localhost no seu navegador para ver a aplicação em produção (Nginx).
+
+    Observações:
+    - Use `--rm` para remover o container quando ele for parado automaticamente.
+    - Se precisar ver logs, rode `docker ps` e depois `docker logs <container-id>`.
+
+    ---
+
+    ## Persistência de dados
+    Os dados são salvos no navegador usando IndexedDB via `localforage`.
+    - Arquivo principal: `src/services/storage.ts`
+    - Serviços: `src/services/bookService.ts`, `src/services/authorService.ts`
+
+    Isso significa que os dados são locais ao navegador — para resetar, limpe o IndexedDB nas DevTools do navegador.
+
+    ---
+
+    ## O que foi implementado
+    - CRUD de Autores: criar, listar, visualizar, excluir.
+    - CRUD de Livros: criar, listar, visualizar, excluir.
+    - UI com Ant Design e validações básicas nos formulários.
+    - Persistência via IndexedDB (localforage).
+    - JSDoc e comentários em muitos arquivos para documentação.
+    - Configuração inicial de testes com Vitest.
+    - Dockerfile para gerar imagem estática servida por Nginx.
+
+    
+
+    
