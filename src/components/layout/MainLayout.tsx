@@ -35,9 +35,7 @@ export default function MainLayout({
       </Sider>
 
       <Layout>
-        <Content style={{ padding: "24px" }}>
-          {children}
-        </Content>
+        <Content style={{ padding: "24px" }}>{children}</Content>
       </Layout>
     </Layout>
   );

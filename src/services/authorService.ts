@@ -1,4 +1,3 @@
-
 import storage from "./storage";
 import { deleteBooksByAuthorId } from "./bookService";
 
@@ -13,7 +12,7 @@ export interface Author {
   // e-mail opcional
   email?: string;
   // data de criação/registro (string ISO)
-  createdAt: string; 
+  createdAt: string;
 }
 
 /**
@@ -51,9 +50,7 @@ export async function createAuthor(newAuthor: Author): Promise<void> {
 export async function deleteAuthor(id: string): Promise<void> {
   const authors = await getAllAuthors();
 
-  const filteredAuthors = authors.filter(
-    (author) => author.id !== id
-  );
+  const filteredAuthors = authors.filter((author) => author.id !== id);
 
   await storage.setItem(AUTHORS_KEY, filteredAuthors);
 

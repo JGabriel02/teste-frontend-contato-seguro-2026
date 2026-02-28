@@ -149,18 +149,17 @@ export default function AuthorsPage() {
       >
         {selectedAuthor && (
           <>
-          <p>
+            <p>
               <strong>ID:</strong> {selectedAuthor.id}
             </p>
             <p>
               <strong>Nome:</strong> {selectedAuthor.name}
             </p>
             <p>
-              <strong>Email:</strong> {" "}
-              {selectedAuthor.email || "Não informado"}
+              <strong>Email:</strong> {selectedAuthor.email || "Não informado"}
             </p>
             <p>
-              <strong>Criado em:</strong> {" "}
+              <strong>Criado em:</strong>{" "}
               {dayjs(selectedAuthor.createdAt).format("DD/MM/YYYY HH:mm")}
             </p>
           </>

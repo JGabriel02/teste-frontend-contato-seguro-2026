@@ -5,8 +5,8 @@ import storage from "./storage";
 export interface Book {
   // identificador único do livro
   id: string;
-     // número sequencial visível
-    code: number; 
+  // número sequencial visível
+  code: number;
   // título/nome do livro
   name: string;
   // id do autor associado (chave estrangeira)
@@ -54,9 +54,7 @@ export async function deleteBook(id: string): Promise<void> {
 export async function deleteBooksByAuthorId(authorId: string): Promise<void> {
   // obtém todos os livros e filtra os que NÃO pertencem ao authorId
   const books = await getAllBooks();
-  const filteredBooks = books.filter(
-    (book) => book.author_id !== authorId
-  );
+  const filteredBooks = books.filter((book) => book.author_id !== authorId);
   // persiste a lista atualizada sem os livros do autor removido
   await storage.setItem(BOOKS_KEY, filteredBooks);
 }
