@@ -1,20 +1,14 @@
 import { useEffect, useState } from "react";
-import {
-  Table,
-  Button,
-  Modal,
-  Form,
-  Input,
-  Select,
-  message,
-  Space,
-} from "antd";
+import { Table, Button, Modal, Form, Input, Select, message, Space } from "antd";
 import dayjs from "dayjs";
 import { getAllBooks, createBook, deleteBook } from "../services/bookService";
 import type { Book } from "../services/bookService";
 import { getAllAuthors, type Author } from "../services/authorService";
 import ActionButtons from "../components/common/ActionButtons";
 
+/**
+ * Página de lista de livros: exibe tabela, permite criar, visualizar e deletar livros.
+ */
 export default function BooksPage() {
   const [books, setBooks] = useState<Book[]>([]);
   const [authors, setAuthors] = useState<Author[]>([]);
@@ -23,7 +17,9 @@ export default function BooksPage() {
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
   const [form] = Form.useForm();
 
-  // carrega livros e autores ao abrir a página
+  /**
+   * Carrega livros e autores do storage e atualiza estados locais.
+   */
   async function loadData() {
     const booksData = await getAllBooks();
     const authorsData = await getAllAuthors();
@@ -39,13 +35,19 @@ export default function BooksPage() {
     fetchData();
   }, []);
 
-  // resolve o nome do autor pelo id
+  /**
+   * Resolve o nome do autor pelo seu id.
+   * @param authorId id do autor
+   */
   function getAuthorName(authorId: string) {
     const author = authors.find((a) => a.id === authorId);
     return author ? author.name : "Autor não encontrado";
   }
 
-  // cria novo livro
+  /**
+   * Handler para criação de livro a partir do formulário.
+   * @param values valores do formulário (name, author_id, pages)
+   */
   async function handleCreateBook(values: {
     name: string;
     author_id: string;
@@ -71,14 +73,20 @@ export default function BooksPage() {
     loadData();
   }
 
-  // remove livro
+  /**
+   * Remove um livro pelo id e atualiza a lista.
+   * @param id id do livro a ser removido
+   */
   async function handleDeleteBook(id: string) {
     await deleteBook(id);
     message.success("Livro removido");
     loadData();
   }
 
-  // abre modal de visualização
+  /**
+   * Define o livro selecionado e abre o modal de visualização.
+   * @param book livro a ser visualizado
+   */
   function handleViewBook(book: Book) {
     setSelectedBook(book);
     setIsViewModalOpen(true);

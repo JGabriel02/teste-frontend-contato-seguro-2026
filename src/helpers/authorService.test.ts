@@ -1,8 +1,16 @@
+/**
+ * Testes unitários para `authorService`.
+ * Verifica criação, leitura, busca e deleção, além de comportamento de cascade delete (mockado).
+ */
 import { describe, it, expect, beforeEach, vi } from "vitest";
 import storage from "../services/storage";
 import { createAuthor, getAllAuthors, getAuthorById, deleteAuthor, type Author, } from "../services/authorService";
 
-// 🔥 mock da função de cascade delete
+/**
+ * Mock do módulo de books para isolar o comportamento de cascade delete.
+ * Aqui só precisamos garantir que a função `deleteBooksByAuthorId` exista
+ * e possa ser verificada (vi.fn()).
+ */
 vi.mock("./bookService", () => ({
   deleteBooksByAuthorId: vi.fn(),
 }));
@@ -15,7 +23,10 @@ describe("Author Service", () => {
     await storage.removeItem(AUTHORS_KEY);
     vi.clearAllMocks();
   });
-
+  /**
+   * Garante que um autor pode ser criado e persistido no storage.
+   * Verifica que a lista retorna o autor recém-criado com os campos corretos.
+   */
   it("should create a new author", async () => {
     const mockAuthor: Author = {
       id: "1",
@@ -35,6 +46,10 @@ describe("Author Service", () => {
     expect(authors[0].id).toBe("1");
   });
 
+  /**
+   * Garante que é possível buscar um autor pelo seu id e que os dados
+   * retornados correspondem ao que foi salvo.
+   */
   it("should return author by id", async () => {
     const mockAuthor: Author = {
       id: "2",
@@ -51,6 +66,11 @@ describe("Author Service", () => {
     expect(author?.name).toBe("Autor Busca");
   });
 
+  /**
+   * Testa a remoção de um autor e assegura que ele não está mais presente
+   * no storage após a operação. Também serve para validar o fluxo que
+   * aciona o delete em cascata (mockado).
+   */
   it("should delete an author", async () => {
     const mockAuthor: Author = {
       id: "3",

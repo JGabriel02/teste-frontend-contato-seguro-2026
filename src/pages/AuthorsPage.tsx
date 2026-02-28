@@ -1,15 +1,13 @@
 import { useEffect, useState } from "react";
 import { Table, Button, Modal, Form, Input, message } from "antd";
 import dayjs from "dayjs";
-
-import {
-  type Author,
-  getAllAuthors,
-  createAuthor,
-  deleteAuthor,
-} from "../services/authorService";
+import { type Author, getAllAuthors, createAuthor, deleteAuthor, } from "../services/authorService";
 import ActionButtons from "../components/common/ActionButtons";
 
+/**
+ * Página que lista autores, permite criar, visualizar e deletar.
+ * Contém tabela, modal de criação e modal de visualização.
+ */
 export default function AuthorsPage() {
   // estado com a lista de autores exibida na tabela
   const [authors, setAuthors] = useState<Author[]>([]);
@@ -20,7 +18,9 @@ export default function AuthorsPage() {
   const [selectedAuthor, setSelectedAuthor] = useState<Author | null>(null);
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
 
-  // função reutilizável para carregar autores do storage e atualizar estado
+  /**
+   * Carrega todos os autores do storage e atualiza o estado local.
+   */
   async function loadAuthors() {
     const data = await getAllAuthors();
     setAuthors(data);
@@ -35,7 +35,11 @@ export default function AuthorsPage() {
     })();
   }, []);
 
-  // handler chamado quando o formulário de criação é enviado
+  /**
+   * Handler chamado quando o formulário de criação é submetido.
+   * Cria um novo Author e atualiza a lista.
+   * @param values valores do formulário (name, email?)
+   */
   async function handleCreateAuthor(values: { name: string; email?: string }) {
     // monta o novo autor com id, nome, e data atual
     const lastCode =
@@ -58,14 +62,20 @@ export default function AuthorsPage() {
     loadAuthors();
   }
 
-  // handler para remover um autor (chama serviço e recarrega lista)
+  /**
+   * Remove um autor pelo id e atualiza a lista.
+   * @param id id do autor a ser removido
+   */
   async function handleDeleteAuthor(id: string) {
     await deleteAuthor(id);
     message.success("Autor removido");
     loadAuthors();
   }
 
-  // handler para visualizar detalhes de um autor (escopo do componente)
+  /**
+   * Abre o modal de visualização mostrando os dados do autor informado.
+   * @param author autor a ser visualizado
+   */
   function handleViewAuthor(author: Author) {
     setSelectedAuthor(author);
     setIsViewModalOpen(true);

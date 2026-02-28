@@ -1,46 +1,63 @@
-// importa o módulo de storage que encapsula getItem/setItem (por exemplo localStorage)
+/**
+ * Storage wrapper usado para persistir dados (localForage instance).
+ * Fornece getItem / setItem usados pelos services.
+ */
 import storage from "./storage";
 
-// definição do formato (tipo) de um livro usado na aplicação
+/**
+ * Representa um livro na aplicação.
+ * @property id Identificador único (UUID)
+ * @property code Número sequencial visível no cadastro
+ * @property name Título do livro
+ * @property author_id ID do autor associado
+ * @property pages Número de páginas (opcional)
+ * @property createdAt Data de criação em ISO string
+ */
 export interface Book {
-  // identificador único do livro
   id: string;
-  // número sequencial visível
   code: number;
-  // título/nome do livro
   name: string;
-  // id do autor associado (chave estrangeira)
   author_id: string;
-  // número de páginas (opcional)
   pages?: number;
-  // data de criação/registro do livro (string ISO)
   createdAt: string;
 }
 
 // chave usada para armazenar a lista de livros no storage
 const BOOKS_KEY = "books";
 
-// retorna todos os livros salvos. Se não houver nada, retorna array vazio.
+/**
+ * Retorna todos os livros salvos.
+ * @returns Promise<Book[]> lista de livros (array vazio se não houver)
+ */
 export async function getAllBooks(): Promise<Book[]> {
   const books = await storage.getItem<Book[]>(BOOKS_KEY);
-  // operador de coalescência para garantir que sempre volte um array
   return books ?? [];
 }
 
-// busca um livro específico pelo seu id — retorna undefined se não encontrado
+/**
+ * Busca um livro pelo id.
+ * @param id id do livro
+ * @returns Promise<Book | undefined> o livro ou undefined se não encontrado
+ */
 export async function getBookById(id: string): Promise<Book | undefined> {
   const books = await getAllBooks();
   return books.find((book) => book.id === id);
 }
 
-// adiciona um novo livro à lista e persiste no storage
+/**
+ * Adiciona um novo livro e persiste a lista.
+ * @param newBook objeto Book a ser adicionado
+ */
 export async function createBook(newBook: Book): Promise<void> {
   const books = await getAllBooks();
   const updatedBooks = [...books, newBook];
   await storage.setItem(BOOKS_KEY, updatedBooks);
 }
 
-// remove um livro pelo id e salva a lista filtrada
+/**
+ * Remove um livro pelo id.
+ * @param id id do livro a remover
+ */
 export async function deleteBook(id: string): Promise<void> {
   const books = await getAllBooks();
   const filteredBooks = books.filter((book) => book.id !== id);
@@ -48,13 +65,11 @@ export async function deleteBook(id: string): Promise<void> {
 }
 
 /**
- * Remove todos os livros de um autor específico
- * (usado para delete em cascata)
+ * Remove todos os livros de um autor específico (delete em cascata).
+ * @param authorId id do autor cujos livros serão removidos
  */
 export async function deleteBooksByAuthorId(authorId: string): Promise<void> {
-  // obtém todos os livros e filtra os que NÃO pertencem ao authorId
   const books = await getAllBooks();
   const filteredBooks = books.filter((book) => book.author_id !== authorId);
-  // persiste a lista atualizada sem os livros do autor removido
   await storage.setItem(BOOKS_KEY, filteredBooks);
 }

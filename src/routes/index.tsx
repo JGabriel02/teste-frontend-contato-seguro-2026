@@ -3,6 +3,9 @@ import AuthorsPage from "../pages/AuthorsPage";
 import BooksPage from "../pages/BooksPage";
 import MainLayout from "../components/layout/MainLayout";
 
+/**
+ * Componente que contém as rotas da aplicação e o layout principal.
+ */
 export default function AppRoutes() {
   return (
     <BrowserRouter>

@@ -1,3 +1,7 @@
+/**
+ * Testes unitários para `bookService`.
+ * Verifica operações básicas: criação, leitura, busca e deleção (incluindo deleção por autor).
+ */
 import { describe, it, expect, beforeEach } from "vitest";
 import storage from "../services/storage";
 import { createBook, getAllBooks, getBookById, deleteBook, deleteBooksByAuthorId, type Book, } from "../services/bookService";
@@ -10,6 +14,10 @@ describe("Book Service", () => {
     await storage.removeItem(BOOKS_KEY);
   });
 
+  /**
+   * Garante que um livro pode ser criado e persistido no storage.
+   * Verifica que a lista retorna o livro recém-criado com os campos corretos.
+   */
   it("should create a new book", async () => {
     const mockBook: Book = {
       id: "1",
@@ -30,6 +38,10 @@ describe("Book Service", () => {
     expect(books[0].pages).toBe(200);
   });
 
+  /**
+   * Verifica que é possível buscar um livro pelo id e que os dados
+   * retornados correspondem ao que foi salvo.
+   */
   it("should return book by id", async () => {
     const mockBook: Book = {
       id: "2",
@@ -47,6 +59,10 @@ describe("Book Service", () => {
     expect(book?.name).toBe("Livro Busca");
   });
 
+  /**
+   * Testa a remoção de um livro individual e assegura que ele não
+   * está mais presente no storage após a operação.
+   */
   it("should delete a book", async () => {
     const mockBook: Book = {
       id: "3",
@@ -65,6 +81,10 @@ describe("Book Service", () => {
     expect(books.length).toBe(0);
   });
 
+  /**
+   * Garante que a função de remoção por authorId elimina apenas os livros
+   * pertencentes ao autor informado, mantendo os demais.
+   */
   it("should delete all books from a specific author", async () => {
     const book1: Book = {
       id: "4",

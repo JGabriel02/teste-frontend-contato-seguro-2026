@@ -5,11 +5,12 @@ import React from "react";
 
 const { Sider, Content } = Layout;
 
-export default function MainLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+/**
+ * Layout principal da aplicação que renderiza a sidebar de navegação
+ * e o conteúdo principal.
+ * @param children conteúdo da página a ser renderizado no layout
+ */
+export default function MainLayout({ children }: { children: React.ReactNode }) {
   const location = useLocation();
 
   return (
